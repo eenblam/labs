@@ -1,0 +1,51 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+INTRANET_NETMASK = "255.255.0.0"
+SERVER_IP_1 = "10.1.1.10"
+CLIENT_IP_1 = "10.1.1.20"
+
+def config_server(server)
+	server.vm.provider "virtualbox" do |vb|
+		vb.customize ["modifyvm", :id, "--memory", 512]
+		# Set network interfaces to adapter types that allow for proper bridging
+		vb.customize ['modifyvm', :id, '--nictype2', '82543GC']
+		vb.customize ["modifyvm", :id, "--nicpromisc2", "allow-all"]
+		# Cap cpu at 50%
+		vb.customize ["modifyvm", :id, "--cpuexecutioncap", "50"]
+		# Can be used for debugging if Vagrant doesn't bring up interfaces properly
+		# vb.gui = true
+	end
+end
+
+Vagrant.configure("2") do |config|
+	config.vm.box = "debian/stretch64"
+	
+	config.vm.define "client" do |server|
+		server.vm.hostname = "client"
+
+		server.vm.network "private_network",
+			virtualbox__intnet: "private_net",
+			ip: CLIENT_IP_1,
+			netmask: INTRANET_NETMASK,
+			gateway: SERVER_IP_1
+
+		config_server server
+
+		# Force client to route through server
+		server.vm.provision "shell",
+			inline: "sudo ip r r default via #{SERVER_IP_1} dev eth1",
+			run: "always"
+	end
+
+	config.vm.define "server" do |server|
+		server.vm.hostname = "server"
+
+		server.vm.network "private_network",
+			virtualbox__intnet: "private_net",
+			ip: SERVER_IP_1,
+			netmask: INTRANET_NETMASK
+
+		config_server server
+	end
+end
