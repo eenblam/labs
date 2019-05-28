@@ -21,8 +21,8 @@ end
 Vagrant.configure("2") do |config|
 	config.vm.box = "debian/stretch64"
 
-	config.vm.define "client" do |server|
-		server.vm.hostname = "client"
+	config.vm.define "pc" do |server|
+		server.vm.hostname = "pc"
 
 		server.vm.network "private_network",
 			virtualbox__intnet: "private_net",
@@ -32,14 +32,14 @@ Vagrant.configure("2") do |config|
 
 		config_server server
 
-		# Force client to route through server
+		# Force PC to route through server
 		server.vm.provision "shell",
 			inline: "sudo ip r r default via #{SERVER_IP_1} dev eth1",
 			run: "always"
 	end
 
-	config.vm.define "server" do |server|
-		server.vm.hostname = "server"
+	config.vm.define "gateway" do |server|
+		server.vm.hostname = "gateway"
 
 		server.vm.network "private_network",
 			virtualbox__intnet: "private_net",
