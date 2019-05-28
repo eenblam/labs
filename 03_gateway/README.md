@@ -1,4 +1,4 @@
-# 03: Escape!
+# 03: Gateway
 You found a neat server sitting out on the curb,
 and you were able to get Debian on it. Cool!
 You want to use it as a gateway for your Debian PC,
