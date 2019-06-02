@@ -12,7 +12,8 @@ All you need, for now, are Vagrant and Virtualbox.
 Python and Ansible might also be required as more labs are developed.
 
 ## Existing Labs
-Looks pretty empty here...
+- [01: Web Server Woes](01_web_server_woes/)
+- [02: Gateway](02_gateway/)
 
 ## Wishlist
 Feel free to open an issue (or a PR!) if there's content you want to see here.
